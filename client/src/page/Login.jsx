@@ -1,18 +1,37 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Form, Container, Row, Col } from "react-bootstrap";
+import axios from "axios";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
+
+  axios.defaults.withCredentials = true;
+  const handleSubmit = e => {
+    e.preventDefault();
+    axios
+      .post("http://localhost:8081/login", values)
+      .then(res => {
+        if (res.data.status === "success") {
+          navigate("/");
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch(err => console.log(err));
+  };
 
   return (
     <div className="login">
       <Container className="justify-content-center align-items-center d-flex">
         <Row className="w-50 mt-5">
           <Col>
-            <Form>
+            <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3">
                 <Form.Label>Email address</Form.Label>
                 <Form.Control
