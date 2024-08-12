@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const bcrypt = require("bcrypt");
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -25,21 +26,19 @@ const db = mysql.createConnection({
   database: "signup",
 });
 
-const verifyUser = (req, res, next) => {
+const verifyUser = async (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
     return res
       .status(401)
       .send({ message: "we need token please provide it." });
-  } else {
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-      if (err) {
-        return res.status(403).send({ message: "Authentication Error" });
-      } else {
-        req.name = decoded.name;
-        next();
-      }
-    });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    req.name = decoded.name;
+    next();
+  } catch (err) {
+    return res.status(403).json({ message: "Authentication Error" });
   }
 };
 
@@ -57,7 +56,7 @@ app.post("/login", (req, res) => {
       const name = result[0].name;
       const token = jwt.sign({ name }, process.env.SECRET_KEY);
 
-      res.cookie("token", token);
+      res.cookie("token", token, { httpOnly: true, secure: true });
       return res.status(200).send({ message: "success" });
     } else {
       return res.send({ message: "Failed Login" });
