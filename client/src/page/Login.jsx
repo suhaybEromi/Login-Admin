@@ -17,7 +17,7 @@ export default function Login() {
     axios
       .post("http://localhost:8081/login", values)
       .then(res => {
-        if (res.data.status === "success") {
+        if (res.data.message === "success") {
           navigate("/");
         } else {
           alert(res.data.message);
