@@ -5,7 +5,6 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-const bcrypt = require("bcrypt");
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
+import { Form, Container, Row, Col } from "react-bootstrap";
 
 export default function Login() {
   const navigate = useNavigate();
-
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
+
+  const handleChange = e => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
 
   axios.defaults.withCredentials = true;
   const handleSubmit = e => {
@@ -35,9 +38,7 @@ export default function Login() {
               <Form.Group className="mb-3">
                 <Form.Label>Email address</Form.Label>
                 <Form.Control
-                  onChange={e =>
-                    setValues({ ...values, email: e.target.value })
-                  }
+                  onChange={handleChange}
                   size="lg"
                   type="email"
                   name="email"
@@ -49,9 +50,7 @@ export default function Login() {
               <Form.Group className="mb-3">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
-                  onChange={e =>
-                    setValues({ ...values, password: e.target.value })
-                  }
+                  onChange={handleChange}
                   size="lg"
                   type="password"
                   name="password"
@@ -61,10 +60,6 @@ export default function Login() {
               </Form.Group>
               <button className="btn btn-primary btn-lg w-100 mb-2">
                 Login
-              </button>
-              <p>You are agree to our terms and policies</p>
-              <button className="btn btn-secondary btn-lg w-100">
-                Create Account
               </button>
             </Form>
           </Col>
